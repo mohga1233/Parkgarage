@@ -1,0 +1,109 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+import javax.swing.JOptionPane;
+
+public class Parkgarage {
+
+	public static void main(String[] args) {
+		// Testdaten einlesen
+		String input = "";
+		if (args.length > 0) {
+			String inputData = "";
+			inputData = loadInputData(args[0]);
+			if (!inputData.isEmpty()) {
+				input = inputData;
+			}
+		}
+		if (input.length() < 1) {
+			System.out.println("no input data found.");
+			System.exit(0);
+		}
+
+		// JOptionPane.showMessageDialog(null, "Herzlich Wilkommen in der Parkgarage von
+		// Markus");
+		//
+		// String x = JOptionPane.showInputDialog(
+		// "Geben Sie die maximalen Parkplätze und die einfahrenden Autos getrennt mit
+		// einem Leerzeichen ein: z.B. 20 10 ");
+		//
+		// String anzahl[] = x.split(" ");
+		//
+		// String y = JOptionPane
+		// .showInputDialog("Geben Sie die Liste von Markus getrennt mit einem
+		// Leerzeichen ein: z.B. 2 5 -2 -5 ");
+
+		String[] zeilen = input.split("\r\n");
+		String x = zeilen[0];
+		String y = zeilen[1];
+		String liste[] = y.split(" ");
+		String anzahl[] = x.split(" ");
+
+		int parkplätze = Integer.parseInt(anzahl[0]);
+		int autos = Integer.parseInt(anzahl[1]);
+
+		int g = 0;
+		int w = 0;
+
+		int warteschlange = 0;
+
+		int autosMomentan = 0;
+		for (int i = 0; i < 2 * autos; i++) {
+			int c = Integer.parseInt(liste[i]);
+
+			if (c > 0) {
+				if (autosMomentan < parkplätze) {
+					autosMomentan++;
+				} else {
+					warteschlange++;
+					System.out.println("Auto "+c+" muss in die Warteschlange.");
+				}
+				
+				if (warteschlange > w) {
+					w = warteschlange;
+				}
+
+			} else if (c < 0) {
+				autosMomentan = autosMomentan - 1;
+//				if (warteschlange > 0) {
+//					warteschlange = warteschlange - 1;
+//				}
+			}
+
+			if (autosMomentan > g) {
+				g = autosMomentan;
+			}
+
+		}
+		System.out.println("Es waren insgesamt " + g + " in der Garage und " + w + " Fahrzeuge in der Warteschlange");
+	}
+
+	public static String loadInputData(String datName) {
+		String fileData = "";
+		File file = new File(datName);
+
+		if (!file.canRead() || !file.isFile()) {
+			return "";
+		}
+		BufferedReader in = null;
+		try {
+			in = new BufferedReader(new FileReader(datName));
+			String zeile = null;
+			while ((zeile = in.readLine()) != null) {
+				fileData += zeile + "\r\n";
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (in != null)
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}
+		return fileData;
+	}
+}
